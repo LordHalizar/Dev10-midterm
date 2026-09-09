@@ -40,6 +40,9 @@ This project will keep the scope manageable by focusing on a small set of agreed
 - High-income countries may show slower population growth or decline, while lower-income countries may show faster growth.
 - Regions with lower infant mortality and higher life expectancy may show different population trajectories than regions with higher mortality rates.
 
+### Current Hypothesis
+- USA has an aging population & life expectancy is going up
+
 ## Data Sources
 The main data source for this project is the U.S. Census International Database (IDB), including population estimates and projections.
 
@@ -60,10 +63,9 @@ The project will follow the KISS principle and keep the main analysis narrow and
 
 ### Planned Focus
 - Country-level population data
-- Country and regional population change over time
-- Fertility rate by country/region
-- Life expectancy at birth by country/region
-- Infant mortality rate by country/region
+- Total population ranges
+- Predictive population rates (life expectancy, mortality, natural growth rate, etc.)
+- population data based on collection year
 
 ### Excluded or Delayed Topics
 - Full multi-table schema for every possible IDB measure
@@ -92,30 +94,44 @@ Each task should include:
 
 ### Phase 1: Project Setup and Planning
 - [ ] Review assignment requirements and scope (Estimated: 1 hour) — Confirm deliverables.
-- [ ] Create GitHub repository and branch (Estimated: 1 hour) — Private repo; add instructor as collaborator.
-- [ ] Add .gitignore and project structure (Estimated: 1 hour) — Keep repo clean.
-- [ ] Create project plan and task tracker (Estimated: 1 hour) — Use GitHub Projects or a markdown checklist.
+- [x] Create GitHub repository and branch (Estimated: 1 hour) — Private repo; add instructor as collaborator.
+- [x] Add .gitignore and project structure (Estimated: 0.5 hour) — Keep repo clean.
+- [x] Create project plan and task tracker (Estimated: 1 hour) — Use GitHub Projects or a markdown checklist.
 - [ ] Instructor review / approval (Estimated: 0.5-1 hour) — Optional, but recommended.
 
 ### Phase 2: Data Collection and Evaluation
-- [ ] Download IDB data (Estimated: 1 hour) — Use the ZIP or API access.
+- [x] Download IDB data (Estimated: 0.5 hour) — Use the ZIP or API access.
 - [ ] Review data dictionary and columns (Estimated: 1-2 hours) — Identify relevant variables.
 - [ ] Inspect file format and structure (Estimated: 1 hour) — Check CSV, TXT, or other source files.
 - [ ] Confirm key fields and country identifiers (Estimated: 1 hour) — Use GEOID and country metadata.
 
 ### Phase 3: Data Modeling and SQL Design
-- [ ] Perform exploratory data analysis (Estimated: 2-3 hours) — Review distributions and missing values.
-- [ ] Design conceptual schema (Estimated: 2 hours) — Country, year, indicator, value.
+- [x] Perform exploratory data analysis (Estimated: 2-3 hours) — Review distributions and missing values.
+- [x] Design conceptual schema (Estimated: 2 hours) — Country, year, indicator, value.
 - [ ] Create ER diagram (Estimated: 2 hours) — Simple 2NF-friendly model.
-- [ ] Draft SQL schema and DDL (Estimated: 2 hours) — Create tables and constraints.
+- [x] Draft SQL schema and DDL (Estimated: 2 hours) — Create tables and constraints.
 
-### Phase 4: ETL Preparation
+### Phase 4: IDB API Communication
+- [ ] determine and install requirements
+    - requests
+- [ ] request for IDB API key for access to IDB
+- [ ] Define steps to communicate with IDB API
+    - Design http methods framework for get requests
+    - determine what data format IDB queries provide
+    - extract data in required format
+
+### Phase 5: ETL Preparation
+- [ ] determine and install requirements
+    - pandas
+    - dynaconf
+    - sqlalchemy
 - [ ] Define extraction steps (Estimated: 1 hour) — Document the source and method.
+    - 
 - [ ] Define transformation steps (Estimated: 2-3 hours) — Rename columns, filter, clean data.
 - [ ] Define load steps (Estimated: 1-2 hours) — Load into SQL database.
 - [ ] Document ETL process (Estimated: 1-2 hours) — Include in the final report.
 
-### Phase 5: Visualizations and Reporting
+### Phase 6: Visualizations and Reporting
 - [ ] Design dashboard layouts (Estimated: 1-2 hours) — Decide on charts and filters.
 - [ ] Build Dash visualizations (Estimated: 3-5 hours) — At least one per dataset or indicator.
 - [ ] Create report with findings (Estimated: 2-3 hours) — Include narrative and citations.

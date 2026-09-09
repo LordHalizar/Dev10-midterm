@@ -57,9 +57,9 @@ This project follows a realistic data workflow:
 
 1. Review and understand the dataset
 2. Define a focused research question and hypotheses
-3. Download and inspect the IDB data
-4. Clean and transform the relevant fields in Python and Pandas
-5. Design a simple SQL schema and ER model
+3. Design a simple SQL schema and ER model
+4. Communicate with IDB API and extract relevant data
+5. Clean and transform the relevant database fields in Python and Pandas
 6. Load the cleaned data into a relational database
 7. Create visualizations using the SQL-backed data
 8. Write a final report with findings and supporting visuals
@@ -84,18 +84,15 @@ This project follows a realistic data workflow:
 ## Proposed Scope
 To keep the project manageable, the analysis will focus on a smaller set of indicators such as:
 
-- Population by country and year
-- Population by region and year
-- Fertility rates
-- Infant mortality
-- Life expectancy at birth
-
-This approach follows the assignment guidance to keep the project simple, focused, and effective.
+- Population growth/age by country & year
 
 ## Example Hypotheses
 - Countries with lower fertility rates may show older age distributions over time.
 - Regions with higher infant mortality may also display lower life expectancy.
 - Population growth may be strongest in countries with a relatively younger age structure.
+
+### Current Hypothesis
+- USA has an aging population & life expectancy is going up
 
 ## Repository Notes
 This repository will be used to store:
