@@ -41,7 +41,7 @@ This project will keep the scope manageable by focusing on a small set of agreed
 - Regions with lower infant mortality and higher life expectancy may show different population trajectories than regions with higher mortality rates.
 
 ### Current Hypothesis
-- USA has an aging population & life expectancy is going up
+- USA has an aging population and Americans will be having fewer children
 
 ## Data Sources
 The main data source for this project is the U.S. Census International Database (IDB), including population estimates and projections.
@@ -101,14 +101,14 @@ Each task should include:
 
 ### Phase 2: Data Collection and Evaluation
 - [x] Download IDB data (Estimated: 0.5 hour) — Use the ZIP or API access.
-- [ ] Review data dictionary and columns (Estimated: 1-2 hours) — Identify relevant variables.
-- [ ] Inspect file format and structure (Estimated: 1 hour) — Check CSV, TXT, or other source files.
-- [ ] Confirm key fields and country identifiers (Estimated: 1 hour) — Use GEOID and country metadata.
+- [x] Review data dictionary and columns (Estimated: 1-2 hours) — Identify relevant variables.
+- [x] Inspect file format and structure (Estimated: 1 hour) — Check CSV, TXT, or other source files.
+- [x] Confirm key fields and country identifiers (Estimated: 1 hour) — Use GEOID and country metadata.
 
 ### Phase 3: Data Modeling and SQL Design
 - [x] Perform exploratory data analysis (Estimated: 2-3 hours) — Review distributions and missing values.
 - [x] Design conceptual schema (Estimated: 2 hours) — Country, year, indicator, value.
-- [ ] Create ER diagram (Estimated: 2 hours) — Simple 2NF-friendly model.
+- [x] Create ER diagram (Estimated: 2 hours) — Simple 2NF-friendly model.
 - [x] Draft SQL schema and DDL (Estimated: 2 hours) — Create tables and constraints.
 
 ### Phase 4: IDB API Communication
@@ -121,15 +121,15 @@ Each task should include:
     - extract data in required format
 
 ### Phase 5: ETL Preparation
-- [ ] determine and install requirements
+- [x] determine and install requirements
     - pandas
     - dynaconf
     - sqlalchemy
 - [ ] Define extraction steps (Estimated: 1 hour) — Document the source and method.
     - 
-- [ ] Define transformation steps (Estimated: 2-3 hours) — Rename columns, filter, clean data.
-- [ ] Define load steps (Estimated: 1-2 hours) — Load into SQL database.
-- [ ] Document ETL process (Estimated: 1-2 hours) — Include in the final report.
+- [x] Define transformation steps (Estimated: 2-3 hours) — Rename columns, filter, clean data.
+- [x] Define load steps (Estimated: 1-2 hours) — Load into SQL database.
+- [x] Document ETL process (Estimated: 1-2 hours) — Include in the final report.
 
 ### Phase 6: Visualizations and Reporting
 - [ ] Design dashboard layouts (Estimated: 1-2 hours) — Decide on charts and filters.

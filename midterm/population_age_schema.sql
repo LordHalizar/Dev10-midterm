@@ -4,7 +4,8 @@ set search_path to population_age;
 
 create table country (
 	country_id serial primary key,
-    country_code varchar(128) not null
+    country_code varchar(128) not null,
+    country_name varchar(128) not null
 );
 
 create table population_range (
@@ -32,28 +33,17 @@ create table population_range (
     pop_range_100 int not null
 );
 
-create table population_rate (
-	pop_rate_id serial primary key,
-	life_expectancy numeric(5, 3) not null,
-	infant_mortality numeric(5, 3) not null,
-	natural_rate numeric(5, 3) not null
-);
-
 create table population_data (
 	pop_data_id serial primary key,
 	year int not null,
+	population_total int not null,
 	median_age numeric(5,3) not null,
 	country_id int not null,
 	pop_range_id int not null,
-	pop_rate_id int not null,
 	foreign key (country_id)
 		references country(country_id),
 	foreign key (pop_range_id)
 		references population_range(pop_range_id),
-	foreign key (pop_rate_id)
-		references population_rate(pop_rate_id),
 	constraint up_country_year
-		unique (country_id, year),
-	constraint uq_range_rate
-		unique (pop_range_id, pop_rate_id)		
+		unique (country_id, year)
 );
