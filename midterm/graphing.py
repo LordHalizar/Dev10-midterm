@@ -83,6 +83,61 @@ class HistogramOneSet(BaseHistogram):
             title=self.title,
         )
 
+class BaseBarGraph:
+    def __init__(
+        self,
+        df: pd.DataFrame,
+        x_value: list[str],
+        y_value: list[str],
+        labels: dict | None = None,
+        hover_name: str | None = None,
+        title: str = "Bar Graph",
+        color: str | None = None,
+        animation_frame: str | None = None,
+        animation_group: str | None = None,
+        range_y: list[int, int] | None = None
+    ):
+        self.df = df
+        self.x_value = x_value
+        self.y_value = y_value
+        self.labels = labels
+        self.hover_name = hover_name
+        self.title = title
+        self.color = color
+        self.animation_frame = animation_frame
+        self.animation_group = animation_group
+        self.range_y = range_y
+
+    def bar_graph(self):
+        not_implemented_error()
+
+# Histogram graphing method meant to take in only one data set
+class BarGraph(BaseBarGraph):
+    def bar_graph(self):
+        return px.bar(
+            data_frame=self.df,
+            x=self.x_value,
+            y=self.y_value,
+            labels=self.labels,
+            hover_name=self.hover_name,
+            title=self.title,
+        )
+
+class BarGraphAnimated(BaseBarGraph):
+    def bar_graph(self):
+        return px.bar(
+            data_frame=self.df,
+            x=self.x_value,
+            y=self.y_value,
+            labels=self.labels,
+            hover_name=self.hover_name,
+            title=self.title,
+            color=self.color,
+            animation_frame=self.animation_frame,
+            animation_group=self.animation_group,
+            range_y=self.range_y
+        )
+
 # Base class and functionality for my line graph charts
 class BaseLineGraph:
     def __init__(
@@ -93,6 +148,7 @@ class BaseLineGraph:
         labels: dict | None = None,
         hover_name: str | None = None,
         title: str = "Line Graph",
+        color: str | None = None,
     ):
         self.df = df
         self.x_value = x_value
@@ -100,6 +156,7 @@ class BaseLineGraph:
         self.labels = labels
         self.hover_name = hover_name
         self.title = title
+        self.color = color
 
     def line_graph(self):
         not_implemented_error()
@@ -113,5 +170,6 @@ class LineGraphOneSet(BaseLineGraph):
             y=self.y_value,
             labels=self.labels,
             hover_name=self.hover_name,
-            title=self.title
+            title=self.title,
+            color=self.color,
         )

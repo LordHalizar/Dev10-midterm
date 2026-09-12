@@ -125,7 +125,7 @@ class Callbacks:
                 self.df[x_col] = pd.to_datetime(self.df[x_col])
 
         # Debugging line to test x-axis and y-axis parameter values
-        print(f"x-axis: {x_col}, y-axis: {y_col}")
+        # print(f"x-axis: {x_col}, y-axis: {y_col}")
 
         if self.df_grouping_col:
             selected_operation = (
@@ -135,7 +135,7 @@ class Callbacks:
             )
             print(f"selected operation: {selected_operation}")
             filtered_df = self.df[self.df[self.df_grouping_col] == selected_operation]
-            print(f"filtered DataFrame: \n{filtered_df.head()}")
+            # print(f"filtered DataFrame: \n{filtered_df.head()}")
             summarized_df = (
                 filtered_df.groupby([self.df_grouping_col, x_col])[y_col]
                 .mean()
@@ -153,6 +153,7 @@ class Callbacks:
             x_value=x_col,
             y_value=y_col,
             title=f"Analysis of {y_col} by {x_col}",
+            color=self.color
         )
 
         return line.line_graph()

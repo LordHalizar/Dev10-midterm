@@ -444,12 +444,12 @@ class PopulationDataETLProcessor(BaseETLProcessor):
         full_range_country_df = full_range_country_df.drop_duplicates()
         final_df = full_range_country_df[['year', 'median_age', 'population_total', 'country_id', 'pop_range_id']]
         final_df = final_df.drop_duplicates().dropna().reset_index(drop=True)
-        full_df = full_df[['year', 'median_age', "POP0_4", "POP5_9", "POP10_14", "POP15_19", "POP20_24", "POP25_29", "POP30_34", "POP35_39", "POP40_44", "POP45_49", "POP50_54", "POP55_59", "POP60_64", "POP65_69", "POP70_74", "POP75_79", "POP80_84", "POP85_89", "POP90_94", "POP95_99", "POP100_"]]
-        print(f"\n full_df: \n {full_df.head(75)} \n")
-        print(f"\n full_range_df: \n {full_range_df} \n")
-        print(f"\n full_country_df: \n {full_country_df} \n")
-        print(f"\n full_range_country_df: \n {full_range_country_df} \n")
-        print(f"\n final_df: \n {final_df} \n")
+        # full_df = full_df[['year', 'median_age', "POP0_4", "POP5_9", "POP10_14", "POP15_19", "POP20_24", "POP25_29", "POP30_34", "POP35_39", "POP40_44", "POP45_49", "POP50_54", "POP55_59", "POP60_64", "POP65_69", "POP70_74", "POP75_79", "POP80_84", "POP85_89", "POP90_94", "POP95_99", "POP100_"]]
+        # print(f"\n full_df: \n {full_df.head(75)} \n")
+        # print(f"\n full_range_df: \n {full_range_df} \n")
+        # print(f"\n full_country_df: \n {full_country_df} \n")
+        # print(f"\n full_range_country_df: \n {full_range_country_df} \n")
+        # print(f"\n final_df: \n {final_df} \n")
 
         return final_df
     def load(self, df: pd.DataFrame) -> pd.DataFrame:
