@@ -129,7 +129,7 @@ Database Tables:
 
 This keeps the model simple while still supporting analysis across time and geography.
 
-## ETL Development Breakdown
+## Project Development Breakdown
 
 ### Phase 1: Project Setup and Planning
 - [x] Review assignment requirements and scope (Estimated: 1 hour) — Confirm deliverables.
@@ -151,12 +151,11 @@ This keeps the model simple while still supporting analysis across time and geog
 - [x] Draft SQL schema and DDL (Estimated: 2 hours) — Create tables and constraints.
 
 ### Phase 4: ETL Preparation
-- [x] Install/Download requirements
+- [x] Install/Download requirements (0.5 hour).
     - os
     - pandas
     - dynaconf
     - sqlalchemy
-    - International Database dataset
 - [x] Extraction steps (0.5 hour).
     - define directory path for locating IDB dataset.
     - extract using "read_csv" pandas method.
@@ -170,7 +169,7 @@ This keeps the model simple while still supporting analysis across time and geog
     - load transformed data into PostgreSQL database.
     - load to database using "to_sql" pandas method
     - custom loading for table with foreign key values
-- [x] Document ETL process (Estimated: 1-2 hours) — Include in the final report.
+- [x] Document ETL process (Estimated: 1-2 hours).
 
 ### Phase 5: Visualizations and Reporting
 - [x] Install/Download requirements
@@ -180,39 +179,6 @@ This keeps the model simple while still supporting analysis across time and geog
 - [x] Build Dash visualizations (Estimated: 8-10 hours) — At least one per dataset or indicator.
 - [x] Create report with findings (Estimated: 2-3 hours) — Include narrative and citations.
 - [x] Gather peer feedback (Estimated: 1 hour) — Integrate revisions.
-
-## ETL Workflow
-
-### Extraction
-1. Download the IDB ZIP data file or use the API to retrieve the relevant dataset.
-2. Review the metadata and variable descriptions.
-3. Identify which files and records are relevant to the project scope.
-4. Load the raw files into a working notebook or local data directory.
-
-### Transformation
-1. Read the raw data into Python using Pandas.
-2. Review column names, data types, and missing values.
-3. Filter to the country/region and year ranges relevant to the research question.
-4. Rename columns to clear and consistent names.
-5. Convert values to appropriate numeric types.
-6. Standardize country and region identifiers.
-7. Create a clean table ready for SQL insertion.
-
-### Load
-1. Create the SQL schema using DDL.
-2. Validate the transformed data against the schema.
-3. Insert cleaned records into the database.
-4. Test queries for data integrity and correctness.
-5. Use the SQL tables as the source for visualizations.
-
-## Visualization Plan
-The final dashboard contains:
-
-- A title slide or introduction tile
-- At least one chart per dataset or indicator used
-- Clear labels for axes, titles, and values
-- Filters and sorting options for reports
-- Data driven directly from the SQL tables
 
 ### Visualizations
 - [x] Line chart: population over time for selected countries

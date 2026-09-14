@@ -14,6 +14,9 @@ With my initial research into US population data, I felt confident that my hypot
 ### Population Data
 Looking at my larger data set of several countries, I was honestly shocked with my findings. While I got expected results from countries like Japan and South Korea, I got rather surprising results with countries like China. I had initially expected China's population growth would match countries like India with a similarly large initial population, but instead I found there to be a staggering drop off in their overall population in the projection data. This too was reflected in the age-range data where a staggering drop off can be seen in age-ranges 0-4 and stark increases in those above the age of 80. For a final comparison, I decided to do a comparative analysis of median ages across my selected sample countries. And from this data, I found that not only was the United States not experiencing a stark increase in median age, it actually maintained the lowest median age among the cohort of countries!
 
+### Conclusion
+While my initial hypothesis is correct, this aging trend in the US is not as drastic in comparison to other parts of the world. Aging population trends can be seen as a world wide phenomenon in the industrialized world and life expectancy seems to be rising globally. Though this is just a conclusion from my initial data sample size. 
+
 ## Potential Decisions
 - Healthcare investments (types of drugs, therapies, research, etc.)
     - VA drug negotiations and planning
