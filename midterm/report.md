@@ -34,6 +34,10 @@ Looking at my larger data set of several countries, I was honestly shocked with 
     - advocating for policy changes to help address our aging population (medicare, social security, etc.)
     - seek grants and funding opportunities for elderly support programs
 
+## Peer Review\Feedback
+- Add more color to visualizations
+- add more countries to dataset
+- create different graph types to display population variables
 
 ## Sources
 
