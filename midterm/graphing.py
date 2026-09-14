@@ -89,23 +89,27 @@ class BaseBarGraph:
         df: pd.DataFrame,
         x_value: list[str],
         y_value: list[str],
+        orientation: str | None = None,
         labels: dict | None = None,
         hover_name: str | None = None,
         title: str = "Bar Graph",
         color: str | None = None,
         animation_frame: str | None = None,
         animation_group: str | None = None,
+        range_x: list[int, int] | None = None,
         range_y: list[int, int] | None = None
     ):
         self.df = df
         self.x_value = x_value
         self.y_value = y_value
+        self.orientation = orientation
         self.labels = labels
         self.hover_name = hover_name
         self.title = title
         self.color = color
         self.animation_frame = animation_frame
         self.animation_group = animation_group
+        self.range_x = range_x
         self.range_y = range_y
 
     def bar_graph(self):
@@ -118,9 +122,12 @@ class BarGraph(BaseBarGraph):
             data_frame=self.df,
             x=self.x_value,
             y=self.y_value,
+            orientation=self.orientation,
             labels=self.labels,
             hover_name=self.hover_name,
             title=self.title,
+            color=self.color,
+
         )
 
 class BarGraphAnimated(BaseBarGraph):
@@ -129,12 +136,14 @@ class BarGraphAnimated(BaseBarGraph):
             data_frame=self.df,
             x=self.x_value,
             y=self.y_value,
+            orientation=self.orientation,
             labels=self.labels,
             hover_name=self.hover_name,
             title=self.title,
             color=self.color,
             animation_frame=self.animation_frame,
             animation_group=self.animation_group,
+            range_x=self.range_x,
             range_y=self.range_y
         )
 
@@ -162,7 +171,7 @@ class BaseLineGraph:
         not_implemented_error()
 
 # Line graphing method meant to take in only one data set
-class LineGraphOneSet(BaseLineGraph):
+class LineGraph(BaseLineGraph):
     def line_graph(self):
         return px.line(
             data_frame=self.df,

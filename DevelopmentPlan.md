@@ -80,24 +80,63 @@ We will break the work into small tasks that can be completed in 0.5 to 4 hours 
 ### Recommended Tool
 GitHub Projects is recommended for tracking tasks, but a spreadsheet or markdown checklist is acceptable if needed.
 
-### Task Tracking Format
-Each task should include:
+## Data Model Concept
+The dataset can be modeled in a simplified structure designed for analysis and SQL loading.
 
-- Task name
-- Estimated time
-- Actual time
-- Owner
-- Status
-- Notes or blockers
+### Entity Types
+- Country
+- Year
+- Population Range Indicators
+- Population Records
+- Population Age Indicator
 
-## Task Breakdown
+### Database Design Breakdown
+Database Tables:
+
+- [x] Country
+    - country id (primary key)
+    - country code
+    - country name
+- [x] Population Rate
+    - population rate id (primary key)
+    - population age-range (0-4)
+    - population age-range (5-9)
+    - population age-range (10-14)
+    - population age-range (15-19)
+    - population age-range (20-24)
+    - population age-range (25-29)
+    - population age-range (30-34)
+    - population age-range (35-39)
+    - population age-range (40-44)
+    - population age-range (45-49)
+    - population age-range (50-54)
+    - population age-range (55-59)
+    - population age-range (60-64)
+    - population age-range (65-69)
+    - population age-range (70-74)
+    - population age-range (75-79)
+    - population age-range (80-84)
+    - population age-range (85-89)
+    - population age-range (90-94)
+    - population age-range (95-99)
+    - population age-range (100+)
+- [x] Population Data
+    - population data id (primary key)
+    - year
+    - median age
+    - country id (foreign key)
+    - population range id (foreign key)
+
+This keeps the model simple while still supporting analysis across time and geography.
+
+## ETL Development Breakdown
 
 ### Phase 1: Project Setup and Planning
-- [ ] Review assignment requirements and scope (Estimated: 1 hour) — Confirm deliverables.
+- [x] Review assignment requirements and scope (Estimated: 1 hour) — Confirm deliverables.
 - [x] Create GitHub repository and branch (Estimated: 1 hour) — Private repo; add instructor as collaborator.
 - [x] Add .gitignore and project structure (Estimated: 0.5 hour) — Keep repo clean.
-- [x] Create project plan and task tracker (Estimated: 1 hour) — Use GitHub Projects or a markdown checklist.
-- [ ] Instructor review / approval (Estimated: 0.5-1 hour) — Optional, but recommended.
+- [x] Create project plan and task tracker (Estimated: 2 hour) — Use GitHub Projects or a markdown checklist.
+- [x] Instructor review / approval (Estimated: 0.5-1 hour) — Optional, but recommended.
 
 ### Phase 2: Data Collection and Evaluation
 - [x] Download IDB data (Estimated: 0.5 hour) — Use the ZIP or API access.
@@ -111,51 +150,33 @@ Each task should include:
 - [x] Create ER diagram (Estimated: 2 hours) — Simple 2NF-friendly model.
 - [x] Draft SQL schema and DDL (Estimated: 2 hours) — Create tables and constraints.
 
-### Phase 4: IDB API Communication
-- [ ] determine and install requirements
-    - requests
-- [ ] request for IDB API key for access to IDB
-- [ ] Define steps to communicate with IDB API
-    - Design http methods framework for get requests
-    - determine what data format IDB queries provide
-    - extract data in required format
-
-### Phase 5: ETL Preparation
-- [x] determine and install requirements
+### Phase 4: ETL Preparation
+- [x] Install/Download requirements
+    - os
     - pandas
     - dynaconf
     - sqlalchemy
-- [ ] Define extraction steps (Estimated: 1 hour) — Document the source and method.
-    - 
-- [x] Define transformation steps (Estimated: 2-3 hours) — Rename columns, filter, clean data.
-- [x] Define load steps (Estimated: 1-2 hours) — Load into SQL database.
+    - International Database dataset
+- [x] Extraction steps (0.5 hour).
+    - define directory path for locating IDB dataset.
+    - extract using "read_csv" pandas method.
+    - define delimiter as "|"
+- [x] Define transformation steps (4-6 hours).
+    - custom transformations for each table.
+    - rename columns to match database.
+    - filter to only required columns.
+    - clean data to match database variable formats.
+- [x] Define load steps (Estimated: 1-2 hours).
+    - load transformed data into PostgreSQL database.
+    - load to database using "to_sql" pandas method
+    - custom loading for table with foreign key values
 - [x] Document ETL process (Estimated: 1-2 hours) — Include in the final report.
 
-### Phase 6: Visualizations and Reporting
+### Phase 5: Visualizations and Reporting
 - [ ] Design dashboard layouts (Estimated: 1-2 hours) — Decide on charts and filters.
-- [ ] Build Dash visualizations (Estimated: 3-5 hours) — At least one per dataset or indicator.
+- [x] Build Dash visualizations (Estimated: 8-10 hours) — At least one per dataset or indicator.
 - [ ] Create report with findings (Estimated: 2-3 hours) — Include narrative and citations.
-- [ ] Gather peer feedback (Estimated: 1 hour) — Integrate revisions.
-
-## Data Model Concept
-The dataset can be modeled in a simplified structure designed for analysis and SQL loading.
-
-### Suggested Entity Types
-- Country
-- Region
-- Year
-- Population Indicator
-- Country Population Record
-
-### Recommended Table Design
-A practical design could include separate tables such as:
-
-- countries
-- regions
-- demographic_indicators
-- population_metrics
-
-This keeps the model simple while still supporting analysis across time and geography.
+- [x] Gather peer feedback (Estimated: 1 hour) — Integrate revisions.
 
 ## ETL Workflow
 
@@ -182,7 +203,7 @@ This keeps the model simple while still supporting analysis across time and geog
 5. Use the SQL tables as the source for visualizations.
 
 ## Visualization Plan
-The final dashboard should contain:
+The final dashboard contains:
 
 - A title slide or introduction tile
 - At least one chart per dataset or indicator used
@@ -190,12 +211,10 @@ The final dashboard should contain:
 - Filters and sorting options for reports
 - Data driven directly from the SQL tables
 
-### Suggested Visualizations
-- Line chart: population over time for selected countries
-- Bar chart: population by country or region
-- Scatter plot: fertility rate vs. life expectancy
-- Line chart: infant mortality over time
-- Area or bar chart: births and deaths by region
+### Visualizations
+- [x] Line chart: population over time for selected countries
+- [x] Bar chart: median age over time for all countries
+- [x] Horizontal bar chart: age-ranges over time for selected country
 
 ## Report Plan
 The final report will include:
@@ -211,39 +230,13 @@ The final report will include:
 ## Deliverables Checklist
 The final submission should include:
 
-- [ ] Project plan
-- [ ] ER diagram
+- [x] Project plan
+- [x] ER diagram
 - [ ] ETL documentation
-- [ ] SQL schema
+- [x] SQL schema
 - [ ] Sketches/outlines
-- [ ] Dash visualizations
+- [x] Dash visualizations
 - [ ] Final report
-
-## Weekly/Phase Timeline
-### Week 1
-- [ ] Review assignment and data sources
-- [ ] Define project scope and hypotheses
-- [ ] Create repository and task tracker
-
-### Week 2
-- [ ] Download and inspect dataset
-- [ ] Begin exploratory analysis
-- [ ] Narrow to a few relevant indicators
-
-### Week 3
-- [ ] Build model and SQL schema
-- [ ] Draft ER diagram
-- [ ] Document data transformation steps
-
-### Week 4
-- [ ] Load data into SQL
-- [ ] Validate queries and sample data
-- [ ] Build dashboard sketches and peer review
-
-### Week 5
-- [ ] Finalize visualizations
-- [ ] Write final report
-- [ ] Incorporate feedback and polish presentation
 
 ## Success Criteria
 The project is successful if it:

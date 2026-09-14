@@ -1,159 +1,183 @@
-from datetime import datetime
+import os
 
 import pandas as pd
-from dash import Input, Output
-from graphing import HistogramOneSet, LineGraphOneSet, ScatterPlotOneSet
+import plotly.graph_objs as go
+from dash import Dash, Input, Output, dcc, html
+from graphing import BarGraphAnimated, LineGraph
+from graphs import (
+    animated_age_range_single_bar_graph,
+    animated_median_age_bar_graph,
+    correlation_matrix,
+    country_pop_line_graph,
+)
 
+os.chdir(os.path.dirname(__file__))
 
-# function to validate if column info can be formatted as datetime
-def is_valid_datetime(val_str, date_format="%Y-%m-%d"):
-    try:
-        datetime.strptime(val_str, date_format)
-        return True
-    except ValueError:
-        return False
+app = Dash(__name__)
 
-# Callbacks class used to implement graphs in dash
-class Callbacks:
-    def __init__(
-        self,
-        df: pd.DataFrame,
-        app,
-        output: Output,
-        input: Input,
-        x_axis: str,
-        y_axis: str | None = None,
-        size: str | None = None,
-        color: str | None = None,
-        is_datetime: bool = False,
-        df_grouping_col: str | None = None,
-    ):
-        self.df = df
-        self.app = app
-        self.output = output
-        self.input = input
-        self.x_axis = x_axis
-        self.y_axis = y_axis
-        self.size = size
-        self.color = color
-        self.is_datetime = is_datetime
-        self.df_grouping_col = df_grouping_col
+# outer register callbacks function sets applied app and data frame for nested graph visualizations
+def register_callbacks(app: Dash, df: pd.DataFrame):
 
-    # Wrapper method for callbacks used to apply callback functionality to graphs
-    def register_callbacks(self, callback_function):
-        @self.app.callback(self.output, self.input)
-        def callback_wrapper(selected_operation):
-            return callback_function(selected_operation)
+    @app.callback(
+        Output('tabs-content', 'children'),
+        Input('tabs', 'value')
+    )
+    def render_content(tab):
+        if tab == 'tab-intro':
+            return html.Div([
+                html.H3('Entity-Relationship Diagram'),
+                html.Img(src=r'midterm\Entity-Relationship_Diagram.png', style={'width': '80%'})
+            ])
+        elif tab == 'tab-usa':
+            return html.Div([
+                html.H3('Country Data'),
+                dcc.Graph(id='usa-line-graph', figure=country_pop_line_graph(df, 'United States')),
+                dcc.Graph(id='usa-age-range', figure=animated_age_range_single_bar_graph(df, 'United States'),)
+            ])
+        elif tab == 'tab-data':
+            return html.Div([
+                html.H3('Population Data'),
+                dcc.Dropdown(
+                    id="line-dropdown-input",
+                    options=[
+                        {"label": country, "value": country}
+                        for country in sorted(df["country_name"].unique())
+                    ],
+                    multi=True,
+                    value=sorted(df["country_name"].unique())[0],
+                ),
+                dcc.Graph(id="line-dropdown-output"),
+                dcc.Dropdown(
+                    id="bar-dropdown-input",
+                    options=[
+                        {"label": country, "value": country}
+                        for country in sorted(df["country_name"].unique())
+                    ],
+                    multi=False,
+                    value=sorted(df["country_name"].unique())[0],
+                ),
+                dcc.Graph(id="bar-dropdown-output"),
+                dcc.Graph(
+                    id="population-animated-graph-median_ages",
+                    figure=animated_median_age_bar_graph(df),
+                ),
+            ])
+        elif tab == 'tab-matrix':
+            correlation_df = df[['year', 'population_total', 'median_age', 'pop_range_0_4', 'pop_range_5_9', 'pop_range_10_14', 'pop_range_15_19', 'pop_range_20_24', 'pop_range_25_29', 'pop_range_30_34', 'pop_range_35_39', 'pop_range_40_44', 'pop_range_45_49', 'pop_range_50_54', 'pop_range_55_59', 'pop_range_60_64', 'pop_range_65_69', 'pop_range_70_74', 'pop_range_75_79', 'pop_range_80_84', 'pop_range_85_89', 'pop_range_90_94', 'pop_range_95_99', 'pop_range_100']]
+            correlation_matrix_result = correlation_matrix(correlation_df)
 
-    # Update method used to generate scatter plot charts and update them based on selected operation by user
-    def update_scatter_plot(self, selected_operation):
-        x_col = self.x_axis
-        if not selected_operation:
-            selected_operation = self.y_axis
+            return html.Div([
+                html.H3('Correlation Matrix'),
+                dcc.Graph(
+                    id="correlation-heatmap",
+                    figure={
+                        "data": [
+                            go.Heatmap(
+                                z=correlation_matrix_result.values,
+                                x=correlation_matrix_result.columns,
+                                y=correlation_matrix_result.columns,
+                                colorscale="Viridis",
+                                # colorscale='YlOrRd',
+                                colorbar=dict(title="Correlation Coefficient"),
+                            )
+                        ],
+                        "layout": go.Layout(
+                            title="Correlation Matrix",
+                            xaxis=dict(title="Variables"),
+                            yaxis=dict(title="Variables"),
+                            width=600,
+                            height=600,
+                        ),
+                    },
+                ),
+            ])
 
-        y_col = selected_operation
+    # line graph that displays population growth for selected countries from dropdown
+    @app.callback(
+        Output("line-dropdown-output", "figure"), Input("line-dropdown-input", "value")
+    )
+    def update_line_graph(selected_countries: list[str] | None = None):
 
-        # Debugging line to test x-axis and y-axis parameter values
-        # print(f"x-axis: {x_col}, y-axis: {y_col}")
+        # applied fix to guarantee selection countries is list type 
+        if not isinstance(selected_countries, list):
+            selected_countries = [selected_countries] if selected_countries else []
 
-        summarized_df = (
-            self.df[[x_col, y_col, self.color]]
-            .groupby([x_col, self.color], as_index=False)
-            .mean()
-            .reset_index()
+        filtered_df = df[df["country_name"].isin(selected_countries)]
+
+        # instantiation of custom line graph function from graphing classes
+        fig = LineGraph(
+            df=filtered_df,
+            x_value="year",
+            y_value="population_total",
+            labels={"year": "Year", "population_total": "Population Total in MidYear"},
+            hover_name="country_name",
+            title="Comparative Analysis of Population Growth",
+            color="country_name",
         )
 
-        scatter = ScatterPlotOneSet(
-            df=summarized_df,
-            x_value=x_col,
-            y_value=y_col,
-            title=f"Analysis of {y_col} per {x_col}",
-            size=self.size,
-            color=self.color
-        )
+        return fig.line_graph()
 
-        print(f"summarized df: \n{summarized_df.columns}")
-        print(f"colors: \n{summarized_df[self.color].unique()}")
+    # animated bar graph that displays age-range population stats for the selected country over time.
+    @app.callback(
+        Output("bar-dropdown-output", "figure"), Input("bar-dropdown-input", "value")
+    )
+    def animated_age_range_bar_graph(selected_country: str | None = None):
+        def melt_df(df: pd.DataFrame):
+            df_melted = df.melt(
+                id_vars=["country_name", "year"],
+                value_vars=[col for col in df.columns if "pop_range" in col],
+                var_name="age_range",
+                value_name="population",
+            )
+            return df_melted
 
-        return scatter.scatter_plot()
+        def max_range(df: pd.DataFrame, range_value: str):
+            return df[range_value].max() * 1.1
 
-    # Update method used to generate histogram charts and update them based on selected operation by user
-    def update_histogram(self, selected_operation):
-        operations = {
-            "count": lambda df: (
-                df.groupby(self.x_axis).size().reset_index(name="Count")
-            ),
-            "sum": lambda df: df.groupby(self.x_axis, as_index=False)[
-                self.y_axis
-            ].sum(),
-            "average": lambda df: df.groupby(self.x_axis, as_index=False)[
-                self.y_axis
-            ].mean(),
-            "minimum": lambda df: df.groupby(self.x_axis, as_index=False)[
-                self.y_axis
-            ].min(),
-            "maximum": lambda df: df.groupby(self.x_axis, as_index=False)[
-                self.y_axis
-            ].max(),
+        # name mappings for age-range population data for easier naming conventions
+        age_range_mapping = {
+            "pop_range_0_4": "0-4 years",
+            "pop_range_5_9": "5-9 years",
+            "pop_range_10_14": "10-14 years",
+            "pop_range_15_19": "15-19 years",
+            "pop_range_20_24": "20-24 years",
+            "pop_range_25_29": "25-29 years",
+            "pop_range_30_34": "30-34 years",
+            "pop_range_35_39": "35-39 years",
+            "pop_range_40_44": "40-44 years",
+            "pop_range_45_49": "45-49 years",
+            "pop_range_50_54": "50-54 years",
+            "pop_range_55_59": "55-59 years",
+            "pop_range_60_64": "60-64 years",
+            "pop_range_65_69": "65-69 years",
+            "pop_range_70_74": "70-74 years",
+            "pop_range_75_79": "75-79 years",
+            "pop_range_80_84": "80-84 years",
+            "pop_range_85_89": "85-89 years",
+            "pop_range_90_94": "90-94 years",
+            "pop_range_95_99": "95-99 years",
+            "pop_range_100": "100+ years",
         }
 
-        summarized_df = operations[selected_operation](self.df)
+        melted_df = melt_df(df)
+        melted_df["age_range"] = melted_df["age_range"].replace(age_range_mapping)
 
-        x_col = self.x_axis
-        y_col = "Count" if selected_operation == "count" else self.y_axis
+        # filter data frame to only entries from user selected country
+        filtered_df = melted_df[melted_df["country_name"] == selected_country]
 
-        hist = HistogramOneSet(
-            df=summarized_df,
-            x_value=x_col,
-            y_value=y_col,
-            title=f"{selected_operation.title()} of {y_col} per {x_col}",
+        max_pop_range = max_range(filtered_df, "population")
+
+        # Instantiation of custom graphing class of animated bar graphs
+        animated_bar_graph = BarGraphAnimated(
+            df=filtered_df,
+            x_value="population",
+            y_value="age_range",
+            orientation="h",
+            color="age_range",
+            animation_frame="year",
+            title=f"Analysis of {selected_country} Population Age Ranges Over Time",
+            labels={"population": "Population", "age_range": "Age Range"},
+            range_x=[0, max_pop_range],
         )
 
-        return hist.histogram()
-
-    # Update method used to generate line graph charts and update them based on selected operation by user
-    def update_line_graph(self, selected_operation):
-        x_col = self.x_axis
-        y_col = self.y_axis
-
-        self.df = self.df.dropna(subset=[y_col])
-        print(self.df.head())
-
-        if self.is_datetime:
-            valid_dates = self.df[x_col].astype(str).apply(is_valid_datetime)
-            if valid_dates.all():
-                self.df[x_col] = pd.to_datetime(self.df[x_col])
-
-        # Debugging line to test x-axis and y-axis parameter values
-        # print(f"x-axis: {x_col}, y-axis: {y_col}")
-
-        if self.df_grouping_col:
-            selected_operation = (
-                selected_operation[0]
-                if isinstance(selected_operation, list)
-                else selected_operation
-            )
-            print(f"selected operation: {selected_operation}")
-            filtered_df = self.df[self.df[self.df_grouping_col] == selected_operation]
-            # print(f"filtered DataFrame: \n{filtered_df.head()}")
-            summarized_df = (
-                filtered_df.groupby([self.df_grouping_col, x_col])[y_col]
-                .mean()
-                .reset_index()
-            )
-        else:
-            summarized_df = (
-                self.df[[x_col] + [y_col]].groupby(x_col).mean().reset_index()
-            )
-
-        print(f"Summarized DataFrame: \n{summarized_df.head()}")
-
-        line = LineGraphOneSet(
-            df=summarized_df,
-            x_value=x_col,
-            y_value=y_col,
-            title=f"Analysis of {y_col} by {x_col}",
-            color=self.color
-        )
-
-        return line.line_graph()
+        return animated_bar_graph.bar_graph()

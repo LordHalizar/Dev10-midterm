@@ -1,33 +1,43 @@
-import logging
-
 import pandas as pd
 
 
+# custom function to remove null values from data frame.
 def drop_na(df: pd.DataFrame, subset: list | None = None) -> pd.DataFrame:
     if subset:
         return df.dropna(subset=subset)
     return df.dropna()
+
+# custom function to remove duplicate entries from data frame.
 def drop_duplicates(df: pd.DataFrame, subset: list | None = None) -> pd.DataFrame:
     if subset:
         return df.drop_duplicates(subset=subset)
     return df.drop_duplicates()
-        
+
+# base etl processor class that defines required variables & base etl methods for child classes.
 class BaseETLProcessor:
     def __init__(self, file_path: str, engine, countries: list[str]):
         self.file_path = file_path
         self.engine = engine
         self.countries = countries
+
     def extract(self):
         return pd.read_csv(self.file_path, delimiter="|")
+
     def transform(self) -> pd.DataFrame:
-        raise NotImplementedError("Subclasses must implement the etl class for specific table types.")
+        raise NotImplementedError(
+            "Subclasses must implement the etl class for specific table types."
+        )
+
     def load(self, df: pd.DataFrame) -> pd.DataFrame:
-        df.to_sql(name=self.table_name, con=self.engine, if_exists="append", index=False)
+        df.to_sql(
+            name=self.table_name, con=self.engine, if_exists="append", index=False
+        )
 
-
+# child etl processor class designed to perform etl processes for country database table
 class CountryETLProcessor(BaseETLProcessor):
-    def transform(self, df:pd.DataFrame) -> pd.DataFrame:
+    def transform(self, df: pd.DataFrame) -> pd.DataFrame:
 
+        # mapping for country names that match to country codes
         country_codes = {
             "AD": "Andorra",
             "AE": "United Arab Emirates",
@@ -280,22 +290,26 @@ class CountryETLProcessor(BaseETLProcessor):
             "ZW": "Zimbabwe",
         }
 
-        countries_df = df[df['GEO_ID'].isin(self.countries)]
-        countries_df = countries_df.rename(columns={'GEO_ID': 'country_code'})
-        countries_df['country_code'] = countries_df['country_code'].str[-2:]
-        countries_df['country_name'] = countries_df['country_code'].map(country_codes)
-        country_code_df = drop_duplicates(df=countries_df, subset=['country_code'])
-        country_code_df = country_code_df[['country_code', 'country_name']].reset_index(drop=True)
+        countries_df = df[df["GEO_ID"].isin(self.countries)]
+        countries_df = countries_df.rename(columns={"GEO_ID": "country_code"})
+        countries_df["country_code"] = countries_df["country_code"].str[-2:]
+        countries_df["country_name"] = countries_df["country_code"].map(country_codes)
+        country_code_df = drop_duplicates(df=countries_df, subset=["country_code"])
+        country_code_df = country_code_df[["country_code", "country_name"]].reset_index(
+            drop=True
+        )
         return country_code_df
+
     def load(self, df: pd.DataFrame) -> pd.DataFrame:
         df.to_sql(name="country", con=self.engine, if_exists="append", index=False)
+
     def process(self):
         print("Extracting data for country table...")
         txt_df = self.extract()
 
         print("Transforming data for country table...")
         transformed_df = self.transform(txt_df)
-        print(transformed_df)
+        # print(transformed_df)
 
         try:
             print("Loading country table data...")
@@ -303,10 +317,33 @@ class CountryETLProcessor(BaseETLProcessor):
         except pd.errors.DatabaseError as e:
             print(f"[ERR]: {e}")
 
+# child etl processor class designed to perform etl processes for population range database table
 class PopulationRangeETLProcessor(BaseETLProcessor):
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
-        range_variables = ["POP0_4", "POP5_9", "POP10_14", "POP15_19", "POP20_24", "POP25_29", "POP30_34", "POP35_39", "POP40_44", "POP45_49", "POP50_54", "POP55_59", "POP60_64", "POP65_69", "POP70_74", "POP75_79", "POP80_84", "POP85_89", "POP90_94", "POP95_99", "POP100_"]
-        countries_df = df[df['GEO_ID'].isin(self.countries)]
+        range_variables = [
+            "POP0_4",
+            "POP5_9",
+            "POP10_14",
+            "POP15_19",
+            "POP20_24",
+            "POP25_29",
+            "POP30_34",
+            "POP35_39",
+            "POP40_44",
+            "POP45_49",
+            "POP50_54",
+            "POP55_59",
+            "POP60_64",
+            "POP65_69",
+            "POP70_74",
+            "POP75_79",
+            "POP80_84",
+            "POP85_89",
+            "POP90_94",
+            "POP95_99",
+            "POP100_",
+        ]
+        countries_df = df[df["GEO_ID"].isin(self.countries)]
         range_df = countries_df[range_variables]
         range_df = drop_na(range_df, subset=range_variables)
 
@@ -331,21 +368,25 @@ class PopulationRangeETLProcessor(BaseETLProcessor):
             "POP85_89": "pop_range_85_89",
             "POP90_94": "pop_range_90_94",
             "POP95_99": "pop_range_95_99",
-            "POP100_": "pop_range_100"
+            "POP100_": "pop_range_100",
         }
 
         range_df = range_df.rename(columns=rename_mapping)
 
         return range_df
+
     def load(self, df: pd.DataFrame) -> pd.DataFrame:
-        df.to_sql(name="population_range", con=self.engine, if_exists="append", index=False)
+        df.to_sql(
+            name="population_range", con=self.engine, if_exists="append", index=False
+        )
+
     def process(self):
         print("Extracting data for population range table...")
         txt_df = self.extract()
 
         print("Transforming data for population range table...")
         transformed_df = self.transform(txt_df)
-        print(transformed_df)
+        # print(transformed_df)
 
         try:
             print("Loading population range table data...")
@@ -353,57 +394,23 @@ class PopulationRangeETLProcessor(BaseETLProcessor):
         except pd.errors.DatabaseError as e:
             print(f"[ERR]: {e}")
 
-# Up for removal
-class PopulationRateETLProcessor(BaseETLProcessor):
-    def transform(self, df: pd.DataFrame) -> pd.DataFrame:
-        rate_variables = ["E0", "IMR", "RNI"]
-
-        us_df = df[df['GEO_ID'] == 'W140000WOUS']
-        rate_df = us_df[rate_variables]
-
-        rename_mapping = {
-            "E0": "life_expectancy",
-            "IMR": "infant_mortality",
-            "RNI": "natural_rate"
-        }
-
-        rate_df = rate_df.rename(columns=rename_mapping)
-        rate_df = drop_na(rate_df, subset=["life_expectancy", "infant_mortality", "natural_rate"])
-
-        return rate_df
-    def load(self, df: pd.DataFrame) -> pd.DataFrame:
-        df.to_sql(name="population_rate", con=self.engine, if_exists="append", index=False)
-    def process(self):
-        print("Extracting data for population rate table...")
-        txt_df = self.extract()
-
-        print("Transforming data for population rate table...")
-        transformed_df = self.transform(txt_df)
-        print(transformed_df)
-
-        try:
-            print("Loading population rate table data...")
-            self.load(transformed_df)
-        except pd.errors.DatabaseError as e:
-            print(f"[ERR]: {e}")
-
+# child etl processor class designed to perform etl processes for population data database table
 class PopulationDataETLProcessor(BaseETLProcessor):
     def extract(self) -> pd.DataFrame:
         with self.engine.connect() as connection:
-            country_df = pd.read_sql("select country_id, country_code from country", connection)
+            country_df = pd.read_sql(
+                "select country_id, country_code from country", connection
+            )
             range_df = pd.read_sql("select * from population_range", connection)
 
         full_df = pd.read_csv(self.file_path, delimiter="|")
-        # full_df = full_df[['#YR', 'GEO_ID', 'MEDAGE', "E0", "IMR", "RNI", "POP0_4", "POP5_9", "POP10_14", "POP15_19", "POP20_24", "POP25_29", "POP30_34", "POP35_39", "POP40_44", "POP45_49", "POP50_54", "POP55_59", "POP60_64", "POP65_69", "POP70_74", "POP75_79", "POP80_84", "POP85_89", "POP90_94", "POP95_99", "POP100_"]]
-        # us_df = full_df[full_df['GEO_ID'] == 'W140000WOUS']
-        # us_df_na = us_df.isna()
-        # missing_IMR = us_df_na[['IMR']].value_counts()
-        # print(f"\n Missing values: \n {us_df_na} \n")
-        # print(f"\n Missing Infant Mortality: \n {missing_IMR} \n")
 
         return country_df, range_df, full_df
-    def transform(self, country_df: pd.DataFrame, range_df: pd.DataFrame, full_df: pd.DataFrame):
-        country_df = country_df.rename(columns={'country_code': 'GEO_ID'})
+
+    def transform(
+        self, country_df: pd.DataFrame, range_df: pd.DataFrame, full_df: pd.DataFrame
+    ):
+        country_df = country_df.rename(columns={"country_code": "GEO_ID"})
 
         range_rename_mapping = {
             "pop_range_0_4": "POP0_4",
@@ -426,43 +433,75 @@ class PopulationDataETLProcessor(BaseETLProcessor):
             "pop_range_85_89": "POP85_89",
             "pop_range_90_94": "POP90_94",
             "pop_range_95_99": "POP95_99",
-            "pop_range_100": "POP100_"
+            "pop_range_100": "POP100_",
         }
 
         range_df = range_df.rename(columns=range_rename_mapping)
 
-        full_df = full_df[full_df['GEO_ID'].isin(self.countries)]
-        full_df['GEO_ID'] = full_df['GEO_ID'].str[-2:]
-        full_df = full_df.rename(columns={'#YR': 'year', 'MEDAGE': 'median_age', 'POP': 'population_total'})
-        
-        range_variables = ["POP0_4", "POP5_9", "POP10_14", "POP15_19", "POP20_24", "POP25_29", "POP30_34", "POP35_39", "POP40_44", "POP45_49", "POP50_54", "POP55_59", "POP60_64", "POP65_69", "POP70_74", "POP75_79", "POP80_84", "POP85_89", "POP90_94", "POP95_99", "POP100_"]
+        full_df = full_df[full_df["GEO_ID"].isin(self.countries)]
+        full_df["GEO_ID"] = full_df["GEO_ID"].str[-2:]
+        full_df = full_df.rename(
+            columns={"#YR": "year", "MEDAGE": "median_age", "POP": "population_total"}
+        )
 
-        full_range_df = full_df.merge(range_df[['pop_range_id'] + range_variables], on=range_variables, how='left')
-        full_country_df = full_df.merge(country_df[['country_id', 'GEO_ID']], on='GEO_ID', how='left')
+        range_variables = [
+            "POP0_4",
+            "POP5_9",
+            "POP10_14",
+            "POP15_19",
+            "POP20_24",
+            "POP25_29",
+            "POP30_34",
+            "POP35_39",
+            "POP40_44",
+            "POP45_49",
+            "POP50_54",
+            "POP55_59",
+            "POP60_64",
+            "POP65_69",
+            "POP70_74",
+            "POP75_79",
+            "POP80_84",
+            "POP85_89",
+            "POP90_94",
+            "POP95_99",
+            "POP100_",
+        ]
 
-        full_range_country_df = full_range_df.merge(full_country_df[['country_id', 'GEO_ID']], on='GEO_ID', how='inner')
+        full_range_df = full_df.merge(
+            range_df[["pop_range_id"] + range_variables], on=range_variables, how="left"
+        )
+        full_country_df = full_df.merge(
+            country_df[["country_id", "GEO_ID"]], on="GEO_ID", how="left"
+        )
+
+        full_range_country_df = full_range_df.merge(
+            full_country_df[["country_id", "GEO_ID"]], on="GEO_ID", how="inner"
+        )
         full_range_country_df = full_range_country_df.drop_duplicates()
-        final_df = full_range_country_df[['year', 'median_age', 'population_total', 'country_id', 'pop_range_id']]
+        final_df = full_range_country_df[
+            ["year", "median_age", "population_total", "country_id", "pop_range_id"]
+        ]
         final_df = final_df.drop_duplicates().dropna().reset_index(drop=True)
-        # full_df = full_df[['year', 'median_age', "POP0_4", "POP5_9", "POP10_14", "POP15_19", "POP20_24", "POP25_29", "POP30_34", "POP35_39", "POP40_44", "POP45_49", "POP50_54", "POP55_59", "POP60_64", "POP65_69", "POP70_74", "POP75_79", "POP80_84", "POP85_89", "POP90_94", "POP95_99", "POP100_"]]
-        # print(f"\n full_df: \n {full_df.head(75)} \n")
-        # print(f"\n full_range_df: \n {full_range_df} \n")
-        # print(f"\n full_country_df: \n {full_country_df} \n")
-        # print(f"\n full_range_country_df: \n {full_range_country_df} \n")
-        # print(f"\n final_df: \n {final_df} \n")
 
         return final_df
+
     def load(self, df: pd.DataFrame) -> pd.DataFrame:
-        df.to_sql(name='population_data', con=self.engine, if_exists="append", index=False)
+        df.to_sql(
+            name="population_data", con=self.engine, if_exists="append", index=False
+        )
+
     def process(self):
-        print("Extracting data for population rate table...")
+        print("Extracting data for population data table...")
         country_df, range_df, full_df = self.extract()
 
-        print("Transforming data for population rate table...")
-        transformed_df = self.transform(country_df=country_df, range_df=range_df, full_df=full_df)
+        print("Transforming data for population data table...")
+        transformed_df = self.transform(
+            country_df=country_df, range_df=range_df, full_df=full_df
+        )
 
         try:
-            print("Loading population rate table data...")
+            print("Loading population data table data...")
             self.load(transformed_df)
         except pd.errors.DatabaseError as e:
             print(f"[ERR]: {e}")
