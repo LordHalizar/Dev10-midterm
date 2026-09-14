@@ -132,13 +132,15 @@ def register_callbacks(app: Dash, df: pd.DataFrame):
                                 colorscale="Viridis",
                                 # colorscale='YlOrRd',
                                 colorbar=dict(title="Correlation Coefficient"),
+                                text=correlation_matrix_result.values,
+                                texttemplate="%{text:.2f}"
                             )
                         ],
                         "layout": go.Layout(
                             title="Correlation Matrix",
                             xaxis=dict(title="Variables"),
                             yaxis=dict(title="Variables"),
-                            width=600,
+                            width=1200,
                             height=600,
                         ),
                     },
