@@ -8,6 +8,10 @@ From the IDB dataset provided, I focused on total population, age-ranges, median
 The United States of America has an aging population and life expectancy is increasing.
 
 ## Visualizations
+![US Population Growth](USA_total_population_growth.png)
+![US Ages Ranges (Before)](USA_age_ranges(beginning).png)
+![US Ages Ranges (After)](USA_age_ranges(end).png)
+
 ### US Data
 With my initial research into US population data, I felt confident that my hypothesis would be proven right. This can be seen in how, though slow, a dip appears in total population project data over time. This led me to believe I would likely see an overall decrease in birth rates and an increase in those over older age-ranges. This turned out to be true, as seen in the following projection of age-ranges. But having gotten more subtle results than I thought, I figured it would be a good idea to compare the US against other countrys' population data.
 
