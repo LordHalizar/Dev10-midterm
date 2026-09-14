@@ -173,9 +173,12 @@ This keeps the model simple while still supporting analysis across time and geog
 - [x] Document ETL process (Estimated: 1-2 hours) — Include in the final report.
 
 ### Phase 5: Visualizations and Reporting
-- [ ] Design dashboard layouts (Estimated: 1-2 hours) — Decide on charts and filters.
+- [x] Install/Download requirements
+    - dash
+    - plotly
+- [x] Design dashboard layouts (Estimated: 1-2 hours) — Decide on charts and filters.
 - [x] Build Dash visualizations (Estimated: 8-10 hours) — At least one per dataset or indicator.
-- [ ] Create report with findings (Estimated: 2-3 hours) — Include narrative and citations.
+- [x] Create report with findings (Estimated: 2-3 hours) — Include narrative and citations.
 - [x] Gather peer feedback (Estimated: 1 hour) — Integrate revisions.
 
 ## ETL Workflow
@@ -232,11 +235,11 @@ The final submission should include:
 
 - [x] Project plan
 - [x] ER diagram
-- [ ] ETL documentation
+- [x] ETL documentation
 - [x] SQL schema
-- [ ] Sketches/outlines
+- [x] Sketches/outlines
 - [x] Dash visualizations
-- [ ] Final report
+- [x] Final report
 
 ## Success Criteria
 The project is successful if it:

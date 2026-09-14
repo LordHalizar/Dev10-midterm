@@ -13,26 +13,52 @@ from graphs import (
 
 os.chdir(os.path.dirname(__file__))
 
-app = Dash(__name__)
-
 # outer register callbacks function sets applied app and data frame for nested graph visualizations
 def register_callbacks(app: Dash, df: pd.DataFrame):
+
+    source_citation = (
+        "Source: US Census Bureau. (2017, December 5). International Data Base (IDB). Census.Gov.",
+        html.A("https://www.census.gov/programs-surveys/international-programs/about/idb.html", href="https://www.census.gov/programs-surveys/international-programs/about/idb.html")
+    )
 
     @app.callback(
         Output('tabs-content', 'children'),
         Input('tabs', 'value')
     )
     def render_content(tab):
-        if tab == 'tab-intro':
+        if tab == 'tab-report':
+            with open("report.md", "r", encoding="utf-8") as f:
+                report_md = f.read()
             return html.Div([
-                html.H3('Entity-Relationship Diagram'),
-                html.Img(src=r'midterm\Entity-Relationship_Diagram.png', style={'width': '80%'})
+                html.H3("Alexander Crosby's Mid-Term Assessment"),
+                dcc.Markdown(
+                    report_md,
+                    style={"padding": "20px"}  # optional styling
+                )
             ])
         elif tab == 'tab-usa':
             return html.Div([
                 html.H3('Country Data'),
                 dcc.Graph(id='usa-line-graph', figure=country_pop_line_graph(df, 'United States')),
-                dcc.Graph(id='usa-age-range', figure=animated_age_range_single_bar_graph(df, 'United States'),)
+                html.Small(
+                            source_citation,
+                            style={
+                            "display": "block",
+                            "marginTop": "4px",
+                            "color": "gray",
+                            "fontStyle": "italic",
+                            "fontSize": "10px"
+                        }),
+                dcc.Graph(id='usa-age-range', figure=animated_age_range_single_bar_graph(df, 'United States')),
+                html.Small(
+                            source_citation,
+                            style={
+                            "display": "block",
+                            "marginTop": "4px",
+                            "color": "gray",
+                            "fontStyle": "italic",
+                            "fontSize": "10px"
+                        }),
             ])
         elif tab == 'tab-data':
             return html.Div([
@@ -47,6 +73,15 @@ def register_callbacks(app: Dash, df: pd.DataFrame):
                     value=sorted(df["country_name"].unique())[0],
                 ),
                 dcc.Graph(id="line-dropdown-output"),
+                html.Small(
+                            source_citation,
+                            style={
+                            "display": "block",
+                            "marginTop": "4px",
+                            "color": "gray",
+                            "fontStyle": "italic",
+                            "fontSize": "10px"
+                        }),
                 dcc.Dropdown(
                     id="bar-dropdown-input",
                     options=[
@@ -57,10 +92,28 @@ def register_callbacks(app: Dash, df: pd.DataFrame):
                     value=sorted(df["country_name"].unique())[0],
                 ),
                 dcc.Graph(id="bar-dropdown-output"),
+                html.Small(
+                            source_citation,
+                            style={
+                            "display": "block",
+                            "marginTop": "4px",
+                            "color": "gray",
+                            "fontStyle": "italic",
+                            "fontSize": "10px"
+                        }),
                 dcc.Graph(
                     id="population-animated-graph-median_ages",
                     figure=animated_median_age_bar_graph(df),
                 ),
+                html.Small(
+                            source_citation,
+                            style={
+                            "display": "block",
+                            "marginTop": "4px",
+                            "color": "gray",
+                            "fontStyle": "italic",
+                            "fontSize": "10px"
+                        }),
             ])
         elif tab == 'tab-matrix':
             correlation_df = df[['year', 'population_total', 'median_age', 'pop_range_0_4', 'pop_range_5_9', 'pop_range_10_14', 'pop_range_15_19', 'pop_range_20_24', 'pop_range_25_29', 'pop_range_30_34', 'pop_range_35_39', 'pop_range_40_44', 'pop_range_45_49', 'pop_range_50_54', 'pop_range_55_59', 'pop_range_60_64', 'pop_range_65_69', 'pop_range_70_74', 'pop_range_75_79', 'pop_range_80_84', 'pop_range_85_89', 'pop_range_90_94', 'pop_range_95_99', 'pop_range_100']]
@@ -90,7 +143,8 @@ def register_callbacks(app: Dash, df: pd.DataFrame):
                         ),
                     },
                 ),
-            ])
+            ],
+        )
 
     # line graph that displays population growth for selected countries from dropdown
     @app.callback(

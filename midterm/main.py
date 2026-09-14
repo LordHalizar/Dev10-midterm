@@ -64,9 +64,9 @@ df = pd.read_sql(query, engine)
 app.layout = html.Div([
     dcc.Tabs(
         id='tabs',
-        value='tab-erd',
+        value='tab-report',
         children=[
-            dcc.Tab(label='Home', value='tab-intro'),
+            dcc.Tab(label='Home', value='tab-report'),
             dcc.Tab(label='US Data', value='tab-usa'),
             dcc.Tab(label='Population Data', value='tab-data'),
             dcc.Tab(label='Correlation Matrix', value='tab-matrix'), 
@@ -79,4 +79,4 @@ app.layout = html.Div([
 register_callbacks(app, df)
 
 if __name__ == "__main__":
-    app.run(debug=True, dev_tools_props_check=True)
+    app.run(debug=True, dev_tools_props_check=False)
