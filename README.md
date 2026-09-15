@@ -1,75 +1,111 @@
-# Activity: Create a Dev10 Classwork Repository
+# International Population Trends Analysis
 
-## Introduction
+## Overview
+This project explores demographic change using data from the U.S. Census International Database (IDB). The analysis focuses on a few key indicators to identify trends in population growth, fertility, mortality, and age structure across countries and regions.
 
-We're about to give you a ton of existing code and documentation. The code includes exercises, starter code for assessments, and sample projects connected to lessons. Documentation includes test plans and design documents.
+The project covers the core topics from Weeks 0-5:
 
-One option is to embed that content in the learning management system. Download it. That's not a great option. Downloading individual projects and files creates a maintenance nightmare. They're hard to organize. What's worse: as instructors we can't see exercise results. Exercises are never graded, but we want to see how you're all doing.
+1. Data Literacy
+2. Python
+3. Relational Databases and SQL
+4. Pandas
+5. Visualizations
 
-A better option is Git. A remote Git repository can be deliberately organized (we organized it), and we can `git push` our code to a remote. In this case, we generate our remote repository from a **template**. A GitHub template repository is a bunch of starter code used to create a remote repository in your GitHub account.
+## Project Goal
+We want to use real-world demographic data to answer important questions about how populations are changing over time. This project will help us practice extracting, cleaning, transforming, and analyzing data, then storing it in a relational database and presenting findings through clear visualizations.
 
-The Dev10 classwork repository is required. We use it to practice, practice, practice.
+## Research Focus
+The dataset will be used to identify trends such as:
 
-### Goals
+- Countries that skew young, middle-age, or older
+- Population increase or decrease by country and region
+- Fertility rate patterns by country and region
+- Infant mortality trends by country and region
+- Births and deaths by country and region
+- Life expectancy at birth by country and region
+- Net international migration by country and region
 
-- Create a Dev10 classwork repository under in your GitHub account generated from a template.
+For this project, we will keep the scope manageable by focusing on a subset of these indicators rather than trying to analyze every variable available in the dataset.
 
-## Create a classwork repository
+## Scenario
+The International Database helps the U.S. government and the public answer fundamental questions about the people and places of the world. These data are used for planning, policymaking, education, and research.
 
-1. Visit https://github.com/new to create a new repository.
-2. Under the "Repository template" label, select the `dev10-program/data-engineering-associate-template` repository template.
-3. Select _your GitHub username_ in the "Owner" select list.
-4. Name your repository `dev10-classwork`.
-5. Toggle the radio button to "Private".
-6. Clicking the "Create repository" button will create a `dev10-classwork` repository in your GitHub account.
+We will analyze this dataset to identify population trends and better understand how demographic conditions change over time across countries and world regions.
 
-<img src="assets/github-template-repo.png" alt="Create a remote repository from a template." class="figure">
+> Source: U.S. Census Bureau. (n.d.). International Database. https://www.census.gov/programs-surveys/international-programs/about/idb.html
 
-> For more information about creating a repository from a template, see https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template.
+## Data Sources
+### Primary Dataset
+- U.S. Census Bureau. International Database (IDB): World Population Estimates and Projections
+  https://www.census.gov/programs-surveys/international-programs/about/idb.html
 
-### Adding Instructors as collaborators
+- Direct dataset download:
+  https://www.census.gov/data-tools/demo/data/idb/dataset/idbzip.zip
 
-After creating your repository, complete the following steps to add your instructors as collaborators.
+### Additional Reference Resources
+- International Database API:
+  https://www.census.gov/data/developers/data-sets/international-database.html
 
-1. Visit the home page for your `dev10-classwork` GitHub repository.
-2. Browse to the "Settings" tab.
-3. On the left, click on "Manage access".
-4. Click on the "Invite a collaborator" button.
-5. In the popup window, type your instructor's GitHub username.
-6. Click the "Add {username} to this repository" button to complete the process.
-7. Repeat steps #4-6 to add additional instructors as collaborators.
+- Geographic identifiers:
+  https://www.census.gov/programs-surveys/geography/guidance/geo-identifiers.html
 
-<img src="assets/github-add-collaborator.png" alt="Add collaborators to the remote repository." class="figure">
+- Countries and areas:
+  https://www.census.gov/programs-surveys/international-programs/about/idb/countries-and-areas.html
 
-## Cloning Your Repo
+## Project Workflow
+This project follows a realistic data workflow:
 
-Before you begin working on your classwork, you need to clone your GitHub repository to your local machine.
+1. Review and understand the dataset
+2. Define a focused research question and hypotheses
+3. Design a simple SQL schema and ER model
+4. Communicate with IDB API and extract relevant data
+5. Clean and transform the relevant database fields in Python and Pandas
+6. Load the cleaned data into a relational database
+7. Create visualizations using the SQL-backed data
+8. Write a final report with findings and supporting visuals
 
-1. Open a terminal window.
-2. Navigate to your dedicated repository directory using the `cd` command.
-3. Use the `git clone` command to clone your repository to your local machine.
+## Tools and Technologies
+- Python
+- Pandas
+- SQL
+- SQLite or another relational database
+- Dash for visualizations
+- Git and GitHub for planning and version control
 
-    ```
-    git clone https://github.com/{github-username}/dev10-classwork.git 
-    ```
+## Expected Deliverables
+- Project plan
+- ER diagram
+- ETL documentation
+- SQL schema
+- Sketches and outlines
+- Dash visualizations and reports
+- Final report
 
-    > Note: replace `{github-username}` with your GitHub username. You can also copy the GitHub URL to the clipboard by clicking on the green "Code" button from your repo's home page, and then clicking the clipboard button to the right of your repo's URL.
+## Proposed Scope
+To keep the project manageable, the analysis will focus on a smaller set of indicators such as:
 
-After cloning, use VS Code to open any of the projects in the repository.
+- Population growth/age by country & year
 
-<blockquote class="icon-block-exclamation-triangle">
-<strong>Important</strong>: Don't open the entire repository in VS Code! Only open a single project folder at a time.
-</blockquote>
+## Example Hypotheses
+- Countries with lower fertility rates may show older age distributions over time.
+- Regions with higher infant mortality may also display lower life expectancy.
+- Population growth may be strongest in countries with a relatively younger age structure.
 
-## Creating and Pushing a Commit
+### Current Hypothesis
+- USA has an aging population & life expectancy is going up
 
-To backup your work and share with instructors, complete the following steps to create and push a commit:
+## Repository Notes
+This repository will be used to store:
 
-1. Open a terminal.
-2. Use `cd` to browse to your repository's folder (e.g. `cd dev10-classwork`).
-3. Use `git add --all` to move changes from the working directory to the staging area.
-4. Use `git commit -m "Latest code changes"` to create a commit from the staging area to the local repository.
-  * Don't use a generic commit message like "Latest code changes".
-  * Using a specific commit message, such as "Update variables and types exercises", will make it easier to locate a specific commit when reviewing the history for your repository.
-5. Use `git push` to push your new commit to the remote repository on GitHub.
-6. Browse to your remote repository on GitHub and confirm your changes.
+- Project planning documents
+- Data source references
+- ETL notes
+- SQL scripts and schema files
+- Visualization and analysis files
+- Final report materials
+
+## Project Documentation
+For a full planning breakdown with tasks, timeline, and milestone structure, see [DevelopmentPlan.md](DevelopmentPlan.md).
+
+## Summary
+This project demonstrates the full lifecycle of a data project: from finding a real dataset, to shaping a simple database model, to cleaning and loading data, to building dashboard-driven insights. The final result will be a clear, evidence-based report supported by visualizations and SQL-backed analysis.
